@@ -1,20 +1,28 @@
 # Setup on another laptop
 
-This skill needs Python 3.11 or 3.12, FFmpeg with FFprobe, and the Python package `faster-whisper`. Install FFmpeg through the operating system's usual package manager. Confirm `ffmpeg -version`, `ffprobe -version`, and `python3 --version` before use.
+This skill needs Python 3.11 or 3.12, FFmpeg with FFprobe and the `libx264` encoder, and the Python package `faster-whisper`. Burning captions also needs FFmpeg's `subtitles` filter. Install FFmpeg from a build linked on the [official FFmpeg download page](https://ffmpeg.org/download.html), or through the operating system's usual package manager, and ensure `ffmpeg` and `ffprobe` are on `PATH`.
 
-From the skill folder:
+From the skill folder on macOS Terminal, with Python 3.12 installed (use `python3.11` instead if that is your installed version):
 
 ```sh
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install faster-whisper
-python scripts/check_env.py
+python3.12 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install faster-whisper
+.venv/bin/python scripts/check_env.py
 ```
 
-On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1` and use `python` in place of `python3`. Keep the virtual environment in the skill folder; it is excluded from the portable ZIP.
+On Windows PowerShell, with Python 3.12 installed:
 
-The first transcription downloads the selected Whisper model. For Telugu, use a multilingual model such as `medium` or `large-v3`, not a name ending in `.en`. `medium` is the default balance between speed and accuracy; switch to `large-v3` if the hardware permits and accuracy needs improvement. Explicitly set `--language te` and leave translation off to keep Telugu output. Verify code-switched English names and Telugu spelling by listening.
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install faster-whisper
+.\.venv\Scripts\python.exe scripts\check_env.py
+```
+
+Use the virtual environment's Python for `transcribe.py` and `render_clip.py` too. These commands do not require PowerShell script activation. Keep `.venv` in the skill folder; Git ignores it.
+
+The first transcription downloads the selected Whisper model. For Telugu, use a multilingual model such as `medium` or `large-v3`, not a name ending in `.en`. The script defaults to CPU with int8 computation so it does not need CUDA on either platform. `medium` is the default balance between speed and accuracy; try `small` if the CPU is too slow, or `large-v3` if the hardware permits and accuracy needs improvement. A Windows NVIDIA GPU can be used with `--device cuda` after installing the CUDA libraries required by faster-whisper. Explicitly set `--language te` and leave translation off to keep Telugu output. Verify code-switched English names and Telugu spelling by listening.
 
 To burn Telugu captions, install a font with Telugu glyphs, such as Noto Sans Telugu, on the laptop. Run a short test export and inspect the shaped glyphs; a successful FFmpeg exit code does not prove the captions look correct. The default export leaves captions as a separate `.srt`, which can be corrected and imported into an editor.
 

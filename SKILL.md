@@ -29,6 +29,7 @@ python3 scripts/render_clip.py /path/to/episode.mp4 --transcript /path/to/work/t
 ```
 
 `render_clip.py` creates `clip.srt` beside the MP4. Add `--burn-subtitles` only after confirming a Telugu-capable font is installed. See [setup](references/setup.md) for dependency and caption details.
+On Windows, invoke the scripts with `.\.venv\Scripts\python.exe` and use Windows file paths as shown in the setup guide.
 
 ## Limits
 

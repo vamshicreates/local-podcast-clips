@@ -21,6 +21,8 @@ def main() -> int:
     parser.add_argument("source", type=Path)
     parser.add_argument("--language", default="te", help="Whisper language code; te is Telugu")
     parser.add_argument("--model", default="medium", help="Multilingual Whisper model, e.g. medium or large-v3")
+    parser.add_argument("--device", choices=("cpu", "cuda", "auto"), default="cpu")
+    parser.add_argument("--compute-type", default="int8", help="CTranslate2 compute type; int8 works on CPU")
     parser.add_argument("--output", required=True, type=Path, help="Output stem without extension")
     args = parser.parse_args()
     if not args.source.is_file():
@@ -32,7 +34,7 @@ def main() -> int:
     except ImportError:
         parser.error("faster-whisper is missing; see references/setup.md")
 
-    model = WhisperModel(args.model, device="auto", compute_type="auto")
+    model = WhisperModel(args.model, device=args.device, compute_type=args.compute_type)
     iterator, info = model.transcribe(
         str(args.source), language=args.language, task="transcribe", word_timestamps=True,
         vad_filter=True,
